@@ -11,7 +11,7 @@ fn main() {
     let db = tinygeoip::Reader::open("data/GeoLite2-City.mmdb").unwrap();
 
     let db_ref = Arc::new(db);
-    let new_svc = move || {
+    let make_svc = move || {
         let mydb = Arc::clone(&db_ref);
         service_fn_ok(move |req| tinygeoip::lookup(req, &mydb))
     };
@@ -19,7 +19,7 @@ fn main() {
     let addr = ([127, 0, 0, 1], 9000).into();
     let server = Server::bind(&addr)
         .http1_pipeline_flush(true)
-        .serve(new_svc)
+        .serve(make_svc)
         .map_err(|e| eprintln!("server error: {}", e));
 
     hyper::rt::run(server);
