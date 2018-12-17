@@ -7,6 +7,10 @@ use hyper::{Body, Request, Response, StatusCode};
 use std::net::IpAddr;
 use std::str::FromStr;
 
+fn err_json(msg: &str) -> Body {
+    Body::from(format!("{{\"error\": \"{}\"}}", msg))
+}
+
 pub fn hello(_req: Request<Body>) -> Response<Body> {
     Response::new(Body::from("hello world"))
 }
@@ -16,30 +20,28 @@ pub fn lookup(req: Request<Body>, db: &Reader) -> Response<Body> {
     response.header("Content-Type", "application/json");
 
     let path = req.uri().path().trim_start_matches("/");
-    // TODO: nice error msg on empty request
+    if path == "" {
+        return response.status(StatusCode::BAD_REQUEST)
+            .body(err_json("missing IP query in path, try /192.168.1.1"))
+            .unwrap()
+    }
 
     let ip: IpAddr = match FromStr::from_str(path) {
         Ok(ip) => ip,
         Err(_e) => {
-            let r = response
-                .status(StatusCode::BAD_REQUEST)
-                .body(Body::from(
-                    r#"{"error": "could not parse invalid IP address"}"#,
-                ))
+            return response.status(StatusCode::BAD_REQUEST)
+                .body(err_json("could not parse invalid IP address"))
                 .unwrap();
-            return r;
         }
     };
 
     let results: Record = match db.lookup(ip) {
         Ok(res) => res,
         Err(_e) => {
-            // TODO: use value of e in msg?
-            let r = response
-                .status(StatusCode::INTERNAL_SERVER_ERROR)
-                .body(Body::from(r#"{"error": "something went horribly wrong"}"#))
+            // native MaxMindDBError(String) is "error while decoding value"
+            return response.status(StatusCode::INTERNAL_SERVER_ERROR)
+                .body(err_json("IP not found"))
                 .unwrap();
-            return r;
         }
     };
 
