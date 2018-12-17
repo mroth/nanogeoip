@@ -4,18 +4,18 @@ use std::net::IpAddr;
 use std::path::Path;
 use maxminddb::MaxMindDBError;
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, PartialEq, Debug)]
 pub struct Record {
     pub country: Country,
     pub location: Location,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, PartialEq, Debug)]
 pub struct Country {
     pub iso_code: Option<String>,
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, PartialEq, Debug)]
 pub struct Location {
     pub latitude: Option<f64>,
     pub longitude: Option<f64>,

@@ -7,6 +7,8 @@ extern crate serde_json;
 mod db;
 pub use self::db::Reader;
 pub use self::db::Record;
+pub use self::db::Country;
+pub use self::db::Location;
 
 mod http;
 pub use self::http::hello;
