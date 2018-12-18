@@ -11,5 +11,6 @@ pub use self::db::Country;
 pub use self::db::Location;
 
 mod http;
+pub use self::http::Options;
 pub use self::http::hello;
 pub use self::http::lookup;

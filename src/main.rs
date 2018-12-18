@@ -1,6 +1,7 @@
 use hyper::rt::Future;
 use hyper::service::{service_fn_ok};
 use hyper::{Server};
+use tinygeoip::{Reader, Options};
 
 use std::sync::Arc;
 
@@ -8,12 +9,12 @@ fn main() {
     // TODO CLI parsing
     
     // TODO handle open error gracefully
-    let db = tinygeoip::Reader::open("data/GeoLite2-City.mmdb").unwrap();
+    let db = Reader::open("data/GeoLite2-City.mmdb").unwrap();
 
     let db_ref = Arc::new(db);
     let make_svc = move || {
         let mydb = Arc::clone(&db_ref);
-        service_fn_ok(move |req| tinygeoip::lookup(req, &mydb))
+        service_fn_ok(move |req| tinygeoip::lookup(req, &mydb, Options::default()))
     };
 
     let addr = ([127, 0, 0, 1], 9000).into();

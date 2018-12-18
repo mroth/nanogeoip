@@ -1,4 +1,5 @@
 use tinygeoip;
+use tinygeoip::Options;
 
 use hyper::rt::{Future, Stream};
 use hyper::{Response, Request, Body, StatusCode};
@@ -54,7 +55,18 @@ fn happy_ipv6() {
     assert_eq!(_bodystring(res), TEST_IPV6_BODY1);
 }
 
-// TODO: test CORS (and uhm, implement!)
+#[test]
+fn cors_header() {
+    let db = _init_reader();
+    let res = tinygeoip::lookup(_req(TEST_IPV4_PATH1), &db, Options::default());
+    assert_eq!(res.headers().get("Access-Control-Allow-Origin").unwrap(), "*");
+    let res = tinygeoip::lookup(_req(TEST_IPV4_PATH1), &db, Options{cors_header: None});
+    assert_eq!(res.headers().get("Access-Control-Allow-Origin"), None);
+    let res = tinygeoip::lookup(_req(TEST_IPV4_PATH1), &db, Options{cors_header: Some("*".to_string())});
+    assert_eq!(res.headers().get("Access-Control-Allow-Origin").unwrap(), "*");
+    let res = tinygeoip::lookup(_req(TEST_IPV4_PATH1), &db, Options{cors_header: Some("https://foo.bar".to_string())});
+    assert_eq!(res.headers().get("Access-Control-Allow-Origin").unwrap(), "https://foo.bar");
+}
 
 
 fn _req(path: &str) -> Request<Body> {
@@ -65,7 +77,7 @@ fn _req(path: &str) -> Request<Body> {
 }
 
 fn _quickget(path: &str) -> Response<Body> {
-    tinygeoip::lookup(_req(path), &_init_reader())
+    tinygeoip::lookup(_req(path), &_init_reader(), Options::default())
 }
 
 // helper function to extract body text from a response
