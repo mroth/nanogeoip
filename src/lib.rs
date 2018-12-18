@@ -11,6 +11,5 @@ pub use self::db::Reader;
 pub use self::db::Record;
 
 mod http;
-pub use self::http::hello;
 pub use self::http::lookup;
 pub use self::http::Options;
