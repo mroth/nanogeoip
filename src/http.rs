@@ -25,12 +25,12 @@ pub fn hello(_req: Request<Body>) -> Response<Body> {
     Response::new(Body::from("hello world"))
 }
 
-pub fn lookup(req: Request<Body>, db: &Reader, opts: Options) -> Response<Body> {
+pub fn lookup(req: Request<Body>, db: &Reader, opts: &Options) -> Response<Body> {
     let mut response = Response::builder();
     response.header("Content-Type", "application/json");
     
-    if let Some(rule) = opts.cors_header {
-        response.header("Access-Control-Allow-Origin", rule);
+    if let Some(ref rule) = opts.cors_header {
+        response.header("Access-Control-Allow-Origin", rule.to_owned());
     }
 
     let path = req.uri().path().trim_start_matches("/");

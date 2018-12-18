@@ -926,6 +926,7 @@ dependencies = [
 name = "tinygeoip"
 version = "0.1.0"
 dependencies = [
+ "clap 2.32.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "criterion 0.2.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "hyper 0.12.17 (registry+https://github.com/rust-lang/crates.io-index)",
  "maxminddb 0.11.0 (registry+https://github.com/rust-lang/crates.io-index)",
