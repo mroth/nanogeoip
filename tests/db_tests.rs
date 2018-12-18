@@ -1,4 +1,4 @@
-use tinygeoip::{Reader, Record, Country, Location};
+use tinygeoip::{Country, Location, Reader, Record};
 
 use std::net::IpAddr;
 
@@ -15,34 +15,25 @@ const TEST_DB_PATH: &str = "testdata/GeoIP2-City-Test.mmdb";
 
 #[test]
 fn db_ipv4_lookup1() {
-    _test_ip_lookup(
-        "89.160.20.112",
-        ("SE", 58.4167, 15.6167, 76)
-    );
+    _test_ip_lookup("89.160.20.112", ("SE", 58.4167, 15.6167, 76));
 }
 
 #[test]
 fn db_ipv4_lookup2() {
-    _test_ip_lookup(
-        "81.2.69.142",
-        ("GB", 51.5142, -0.0931, 10)
-    );
+    _test_ip_lookup("81.2.69.142", ("GB", 51.5142, -0.0931, 10));
 }
 
 #[test]
 fn db_ipv6_lookup1() {
     _test_ip_lookup(
         "2001:218:85a3:0000:0000:8a2e:0370:7334",
-        ("JP", 35.68536, 139.75309, 100)
+        ("JP", 35.68536, 139.75309, 100),
     );
 }
 
 #[test]
 fn db_ipv6_lookup2() {
-    _test_ip_lookup(
-        "2001:220::1337",
-        ("KR", 37.0, 127.5, 100)
-    );
+    _test_ip_lookup("2001:220::1337", ("KR", 37.0, 127.5, 100));
 }
 
 fn _test_ip_lookup(ip_str: &str, expected: (&str, f64, f64, u16)) {
@@ -50,15 +41,16 @@ fn _test_ip_lookup(ip_str: &str, expected: (&str, f64, f64, u16)) {
     let ip: IpAddr = ip_str.parse().unwrap();
 
     let (iso_code, lat, long, accuracy) = expected;
-    let expect_results = Record{
-		country: Country {
-			iso_code: Some(iso_code.to_string()),
-		}, location: Location {
-			latitude:  Some(lat),
-			longitude: Some(long),
-			accuracy_radius:  Some(accuracy),
-        }
-	};
+    let expect_results = Record {
+        country: Country {
+            iso_code: Some(iso_code.to_string()),
+        },
+        location: Location {
+            latitude: Some(lat),
+            longitude: Some(long),
+            accuracy_radius: Some(accuracy),
+        },
+    };
     let results = reader.lookup(ip);
     assert_eq!(results, Ok(expect_results));
     // TODO: close reader

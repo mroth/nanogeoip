@@ -1,8 +1,8 @@
 use serde_derive::{Deserialize, Serialize};
 
+use maxminddb::MaxMindDBError;
 use std::net::IpAddr;
 use std::path::Path;
-use maxminddb::MaxMindDBError;
 
 /// Record is a minimal set of information that is queried for and returned from
 /// our lookups, consisting of a `Country` and `Location`.
