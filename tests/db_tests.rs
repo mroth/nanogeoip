@@ -1,4 +1,4 @@
-use tinygeoip::{Country, Location, Reader, Record};
+use nanogeoip::{Country, Location, Reader, Record};
 
 use std::net::IpAddr;
 

@@ -1,7 +1,7 @@
 REALDATA_URI  = https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz
 REALDATA_DIR  = data
 REALDATA_PATH = $(REALDATA_DIR)/GeoLite2-City.mmdb
-RELEASE = target/release/tinygeoip
+RELEASE = target/release/nanogeoip
 
 .PHONY: test bench benchreal realdata clobber
 

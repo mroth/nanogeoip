@@ -1,5 +1,5 @@
-use tinygeoip;
-use tinygeoip::Options;
+use nanogeoip;
+use nanogeoip::Options;
 
 use hyper::rt::{Future, Stream};
 use hyper::{Body, Request, Response, StatusCode};
@@ -78,14 +78,14 @@ fn happy_ipv6() {
 #[test]
 fn cors_header() {
     let db = _init_reader();
-    let res = tinygeoip::lookup(_req(TEST_IPV4_PATH1), &db, &Options::default());
+    let res = nanogeoip::lookup(_req(TEST_IPV4_PATH1), &db, &Options::default());
     assert_eq!(
         res.headers().get("Access-Control-Allow-Origin").unwrap(),
         "*"
     );
-    let res = tinygeoip::lookup(_req(TEST_IPV4_PATH1), &db, &Options { cors_header: None });
+    let res = nanogeoip::lookup(_req(TEST_IPV4_PATH1), &db, &Options { cors_header: None });
     assert_eq!(res.headers().get("Access-Control-Allow-Origin"), None);
-    let res = tinygeoip::lookup(
+    let res = nanogeoip::lookup(
         _req(TEST_IPV4_PATH1),
         &db,
         &Options {
@@ -96,7 +96,7 @@ fn cors_header() {
         res.headers().get("Access-Control-Allow-Origin").unwrap(),
         "*"
     );
-    let res = tinygeoip::lookup(
+    let res = nanogeoip::lookup(
         _req(TEST_IPV4_PATH1),
         &db,
         &Options {
@@ -114,7 +114,7 @@ fn _req(path: &str) -> Request<Body> {
 }
 
 fn _quickget(path: &str) -> Response<Body> {
-    tinygeoip::lookup(_req(path), &_init_reader(), &Options::default())
+    nanogeoip::lookup(_req(path), &_init_reader(), &Options::default())
 }
 
 // helper function to extract body text from a response
@@ -131,6 +131,6 @@ fn _bodystring(res: Response<Body>) -> String {
 }
 
 // TODO: load me once at beginning of tests instead, before teardown
-fn _init_reader() -> tinygeoip::Reader {
-    tinygeoip::Reader::open("testdata/GeoIP2-City-Test.mmdb").unwrap()
+fn _init_reader() -> nanogeoip::Reader {
+    nanogeoip::Reader::open("testdata/GeoIP2-City-Test.mmdb").unwrap()
 }

@@ -5,7 +5,7 @@ use clap::{App, Arg};
 use hyper::rt::Future;
 use hyper::service::service_fn_ok;
 use hyper::Server;
-use tinygeoip::{Options, Reader};
+use nanogeoip::{Options, Reader};
 
 use std::process;
 use std::sync::Arc;
@@ -14,7 +14,7 @@ fn main() {
     let matches = App::new(crate_name!())
         .version(crate_version!())
         .about("A tiny (and blazing fast!) geoip lookup microservice")
-        .after_help("For more information see https://github.com/mroth/tinygeoip")
+        .after_help("For more information see https://github.com/mroth/nanogeoip")
         .arg(
             Arg::with_name("db")
                 .index(1)
@@ -74,7 +74,7 @@ fn main() {
     let (db_ref, opts_ref) = (Arc::new(db), Arc::new(opts));
     let make_svc = move || {
         let (svc_db, svc_opts) = (db_ref.clone(), opts_ref.clone());
-        service_fn_ok(move |req| tinygeoip::lookup(req, &svc_db, &svc_opts))
+        service_fn_ok(move |req| nanogeoip::lookup(req, &svc_db, &svc_opts))
     };
 
     let addr = ([127, 0, 0, 1], port).into();

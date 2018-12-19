@@ -1,5 +1,5 @@
 [package]
-name = "tinygeoip"
+name = "nanogeoip"
 version = "0.1.0"
 authors = ["Matthew Rothenberg <mroth@mroth.info>"]
 edition = "2018"

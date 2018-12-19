@@ -7,7 +7,7 @@ use std::net::IpAddr;
 use std::str::FromStr;
 
 fn criterion_benchmark(c: &mut Criterion) {
-    let db = tinygeoip::Reader::open("data/GeoLite2-City.mmdb").unwrap();
+    let db = nanogeoip::Reader::open("data/GeoLite2-City.mmdb").unwrap();
     let ip: IpAddr = FromStr::from_str("89.160.20.112").unwrap();
     let mmdb = maxminddb::Reader::open_readfile("data/GeoLite2-City.mmdb").unwrap();
 
