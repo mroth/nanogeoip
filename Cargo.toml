@@ -12,9 +12,6 @@ serde_json = "1.0"
 hyper = "0.12"
 clap = "2.32.0"
 
-[features]
-memmap = ["maxminddb/memmap"]
-
 [dev-dependencies]
 criterion = "0.2"
 
