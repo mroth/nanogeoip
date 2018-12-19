@@ -37,6 +37,8 @@ fn db_ipv6_lookup2() {
 }
 
 fn _test_ip_lookup(ip_str: &str, expected: (&str, f64, f64, u16)) {
+    // if we want to reduce test startup time in future, it will make sense to
+    // wrap the reader in a lazy_static! to avoid re-opening DB every time
     let reader = Reader::open(TEST_DB_PATH).unwrap();
     let ip: IpAddr = ip_str.parse().unwrap();
 
@@ -53,5 +55,4 @@ fn _test_ip_lookup(ip_str: &str, expected: (&str, f64, f64, u16)) {
     };
     let results = reader.lookup(ip);
     assert_eq!(results, Ok(expect_results));
-    // TODO: close reader
 }

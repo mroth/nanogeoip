@@ -41,7 +41,7 @@ pub struct Location {
 /// Reader essentially wraps a `maxminddb::Reader` to query for and retrieve our
 /// minimal data structure only. By querying for less, lookups are faster.
 pub struct Reader {
-    db: maxminddb::OwnedReader<'static>,
+    db: maxminddb::Reader<Vec<u8>>,
 }
 
 impl Reader {
@@ -49,11 +49,9 @@ impl Reader {
     ///
     /// Argument must be the path to a valid maxmindDB file containing city precision.
     pub fn open<P: AsRef<Path>>(database: P) -> Result<Reader, MaxMindDBError> {
-        let reader = maxminddb::Reader::open(database)?;
+        let reader = maxminddb::Reader::open_readfile(database)?;
         Ok(Reader { db: reader })
     }
-
-    // TODO: close()
 
     /// lookup returns the results for a given IP address, or an error if
     /// results can not be obtained for some reason.
