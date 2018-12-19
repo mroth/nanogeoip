@@ -47,9 +47,13 @@ fn main() {
 
     let db_path = matches.value_of("db").unwrap(); //safe bc default val
     let db = match Reader::open(db_path) {
-        Ok(val) => val,
+        Ok(val) => {
+            println!("Loaded database {}: {} nodes", db_path, val.node_count());
+            val
+        }
         Err(e) => {
-            eprintln!("{}", e);
+            // default error "error while decoding value" not very helpful
+            eprintln!("Failed to load a GeoIP database from {}: {}", db_path, e);
             process::exit(1);
         }
     };

@@ -59,4 +59,9 @@ impl Reader {
         let results: Record = self.db.lookup(ip)?;
         Ok(results)
     }
+
+    // node count metadata of the underlying database
+    pub fn node_count(&self) -> u32 {
+        self.db.metadata.node_count
+    }
 }
