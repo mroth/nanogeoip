@@ -1,5 +1,3 @@
-extern crate hyper;
-
 use super::db::{Reader, Record};
 
 use hyper::{Body, Request, Response, StatusCode};
