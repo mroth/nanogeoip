@@ -1,6 +1,7 @@
 use super::db::{Reader, Record};
 
 use hyper::{Body, Request, Response, StatusCode};
+use hyper::header::{ACCESS_CONTROL_ALLOW_ORIGIN, CONTENT_TYPE};
 
 use std::net::IpAddr;
 use std::str::FromStr;
@@ -23,10 +24,10 @@ fn err_json(msg: &str) -> Body {
 
 pub fn lookup(req: Request<Body>, db: &Reader, opts: &Options) -> Response<Body> {
     let mut response = Response::builder();
-    response.header("Content-Type", "application/json");
+    response.header(CONTENT_TYPE, "application/json");
 
     if let Some(ref rule) = opts.cors_header {
-        response.header("Access-Control-Allow-Origin", rule.to_owned());
+        response.header(ACCESS_CONTROL_ALLOW_ORIGIN, rule.to_owned());
     }
 
     let path = req.uri().path().trim_start_matches("/");
