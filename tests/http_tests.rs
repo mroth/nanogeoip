@@ -18,7 +18,9 @@ const TEST_IPV6_BODY1: &str = r#"{"country":{"iso_code":"JP"},"location":{"latit
 fn no_path() {
     let res = _quickget("/");
     assert_eq!(
-        res.headers().get("Content-Type").unwrap(),
+        res.headers()
+            .get("Content-Type")
+            .expect("Content-Type header should be present"),
         "application/json"
     );
     assert_eq!(res.status(), StatusCode::BAD_REQUEST);
@@ -32,7 +34,9 @@ fn no_path() {
 fn malformed_ip() {
     let res = _quickget("/192.168.aaa.bbb");
     assert_eq!(
-        res.headers().get("Content-Type").unwrap(),
+        res.headers()
+            .get("Content-Type")
+            .expect("Content-Type header should be present"),
         "application/json"
     );
     assert_eq!(res.status(), StatusCode::BAD_REQUEST);
@@ -46,7 +50,9 @@ fn malformed_ip() {
 fn ip_not_found() {
     let res = _quickget("/127.0.0.1");
     assert_eq!(
-        res.headers().get("Content-Type").unwrap(),
+        res.headers()
+            .get("Content-Type")
+            .expect("Content-Type header should be present"),
         "application/json"
     );
     assert_eq!(res.status(), StatusCode::INTERNAL_SERVER_ERROR);
@@ -57,7 +63,9 @@ fn ip_not_found() {
 fn happy_ipv4() {
     let res = _quickget(TEST_IPV4_PATH1);
     assert_eq!(
-        res.headers().get("Content-Type").unwrap(),
+        res.headers()
+            .get("Content-Type")
+            .expect("Content-Type header should be present"),
         "application/json"
     );
     assert_eq!(res.status(), StatusCode::OK);
@@ -68,7 +76,9 @@ fn happy_ipv4() {
 fn happy_ipv6() {
     let res = _quickget(TEST_IPV6_PATH1);
     assert_eq!(
-        res.headers().get("Content-Type").unwrap(),
+        res.headers()
+            .get("Content-Type")
+            .expect("Content-Type header should be present"),
         "application/json"
     );
     assert_eq!(res.status(), StatusCode::OK);
@@ -80,11 +90,15 @@ fn cors_header() {
     let db = _init_reader();
     let res = nanogeoip::lookup(_req(TEST_IPV4_PATH1), &db, &Options::default());
     assert_eq!(
-        res.headers().get("Access-Control-Allow-Origin").unwrap(),
+        res.headers()
+            .get("Access-Control-Allow-Origin")
+            .expect("Access-Control-Allow-Origin header should be present"),
         "*"
     );
+
     let res = nanogeoip::lookup(_req(TEST_IPV4_PATH1), &db, &Options { cors_header: None });
     assert_eq!(res.headers().get("Access-Control-Allow-Origin"), None);
+
     let res = nanogeoip::lookup(
         _req(TEST_IPV4_PATH1),
         &db,
@@ -93,9 +107,12 @@ fn cors_header() {
         },
     );
     assert_eq!(
-        res.headers().get("Access-Control-Allow-Origin").unwrap(),
+        res.headers()
+            .get("Access-Control-Allow-Origin")
+            .expect("Access-Control-Allow-Origin header should be present"),
         "*"
     );
+
     let res = nanogeoip::lookup(
         _req(TEST_IPV4_PATH1),
         &db,
@@ -104,7 +121,9 @@ fn cors_header() {
         },
     );
     assert_eq!(
-        res.headers().get("Access-Control-Allow-Origin").unwrap(),
+        res.headers()
+            .get("Access-Control-Allow-Origin")
+            .expect("Access-Control-Allow-Origin header should be present"),
         "https://foo.bar"
     );
 }
