@@ -16,5 +16,5 @@ clap = "2.32.0"
 criterion = "0.2"
 
 [[bench]]
-name = "my_benchmark"
+name = "http_benchmarks"
 harness = false
