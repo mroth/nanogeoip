@@ -2,6 +2,7 @@
 extern crate clap;
 use clap::{App, Arg};
 
+use httpdate;
 use hyper::rt::Future;
 use hyper::service::service_fn_ok;
 use hyper::Server;
@@ -48,7 +49,12 @@ fn main() {
     let db_path = matches.value_of("db").unwrap(); //safe bc default val
     let db = match Reader::open(db_path) {
         Ok(val) => {
-            println!("Loaded database {}: {} nodes", db_path, val.node_count());
+            println!(
+                "Loaded database {}: {} nodes, built {}",
+                db_path,
+                val.node_count(),
+                httpdate::fmt_http_date(val.build_time())
+            );
             val
         }
         Err(e) => {

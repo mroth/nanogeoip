@@ -23,6 +23,7 @@ fn no_path() {
             .expect("Content-Type header should be present"),
         "application/json"
     );
+    assert!(res.headers().get("Last-Modified").is_none());
     assert_eq!(res.status(), StatusCode::BAD_REQUEST);
     assert_eq!(
         _bodystring(res),
@@ -39,6 +40,7 @@ fn malformed_ip() {
             .expect("Content-Type header should be present"),
         "application/json"
     );
+    assert!(res.headers().get("Last-Modified").is_none());
     assert_eq!(res.status(), StatusCode::BAD_REQUEST);
     assert_eq!(
         _bodystring(res),
@@ -55,6 +57,7 @@ fn ip_not_found() {
             .expect("Content-Type header should be present"),
         "application/json"
     );
+    assert!(res.headers().get("Last-Modified").is_none());
     assert_eq!(res.status(), StatusCode::INTERNAL_SERVER_ERROR);
     assert_eq!(_bodystring(res), r#"{"error": "IP not found"}"#)
 }
@@ -68,6 +71,7 @@ fn happy_ipv4() {
             .expect("Content-Type header should be present"),
         "application/json"
     );
+    assert!(res.headers().get("Last-Modified").is_some());
     assert_eq!(res.status(), StatusCode::OK);
     assert_eq!(_bodystring(res), TEST_IPV4_BODY1);
 }
@@ -81,6 +85,7 @@ fn happy_ipv6() {
             .expect("Content-Type header should be present"),
         "application/json"
     );
+    assert!(res.headers().get("Last-Modified").is_some());
     assert_eq!(res.status(), StatusCode::OK);
     assert_eq!(_bodystring(res), TEST_IPV6_BODY1);
 }

@@ -3,6 +3,7 @@ use serde_derive::{Deserialize, Serialize};
 use maxminddb::MaxMindDBError;
 use std::net::IpAddr;
 use std::path::Path;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 /// Record is a minimal set of information that is queried for and returned from
 /// our lookups, consisting of a `Country` and `Location`.
@@ -42,6 +43,7 @@ pub struct Location {
 /// minimal data structure only. By querying for less, lookups are faster.
 pub struct Reader {
     db: maxminddb::Reader<Vec<u8>>,
+    load_ts: SystemTime, // timestamp for when we loaded the database
 }
 
 impl Reader {
@@ -50,7 +52,10 @@ impl Reader {
     /// Argument must be the path to a valid maxmindDB file containing city precision.
     pub fn open<P: AsRef<Path>>(database: P) -> Result<Reader, MaxMindDBError> {
         let reader = maxminddb::Reader::open_readfile(database)?;
-        Ok(Reader { db: reader })
+        Ok(Reader {
+            db: reader,
+            load_ts: SystemTime::now(),
+        })
     }
 
     /// lookup returns the results for a given IP address, or an error if
@@ -63,5 +68,15 @@ impl Reader {
     // node count metadata of the underlying database
     pub fn node_count(&self) -> u32 {
         self.db.metadata.node_count
+    }
+
+    // timestamp metadata for when the underlying database originally built
+    pub fn build_time(&self) -> SystemTime {
+        UNIX_EPOCH + Duration::from_secs(self.db.metadata.build_epoch)
+    }
+
+    // timestamp for when the underlying database was loaded into memory
+    pub fn load_time(&self) -> SystemTime {
+        self.load_ts
     }
 }

@@ -1,3 +1,4 @@
+extern crate httpdate;
 extern crate hyper;
 extern crate maxminddb;
 extern crate serde;
