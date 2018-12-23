@@ -1,8 +1,7 @@
 use super::db::{Reader, Record};
 
-use httpdate;
-use hyper::{Body, Request, Response, StatusCode};
 use hyper::header::{ACCESS_CONTROL_ALLOW_ORIGIN, CONTENT_TYPE, LAST_MODIFIED};
+use hyper::{Body, Request, Response, StatusCode};
 
 use std::net::IpAddr;
 use std::str::FromStr;
@@ -61,6 +60,6 @@ pub fn lookup(req: Request<Body>, db: &Reader, opts: &Options) -> Response<Body>
     };
 
     let payload = serde_json::to_vec(&results).unwrap();
-    response.header(LAST_MODIFIED, httpdate::fmt_http_date(db.load_time()));
+    response.header(LAST_MODIFIED, db.load_time_str());
     response.body(Body::from(payload)).unwrap()
 }

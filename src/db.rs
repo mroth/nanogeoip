@@ -43,7 +43,10 @@ pub struct Location {
 /// minimal data structure only. By querying for less, lookups are faster.
 pub struct Reader {
     db: maxminddb::Reader<Vec<u8>>,
-    load_ts: SystemTime, // timestamp for when we loaded the database
+    // timestamp for when we loaded the database
+    load_ts: SystemTime,
+    // timestamp as cached string
+    load_tss: String,
 }
 
 impl Reader {
@@ -52,9 +55,11 @@ impl Reader {
     /// Argument must be the path to a valid maxmindDB file containing city precision.
     pub fn open<P: AsRef<Path>>(database: P) -> Result<Reader, MaxMindDBError> {
         let reader = maxminddb::Reader::open_readfile(database)?;
+        let ts = SystemTime::now();
         Ok(Reader {
             db: reader,
-            load_ts: SystemTime::now(),
+            load_ts: ts,
+            load_tss: httpdate::fmt_http_date(ts),
         })
     }
 
@@ -78,5 +83,14 @@ impl Reader {
     // timestamp for when the underlying database was loaded into memory
     pub fn load_time(&self) -> SystemTime {
         self.load_ts
+    }
+
+    // load_time() but as a cached HTTP date, suitable for a Last-Modified header
+    //
+    // TODO: This is not really where I'd like to stick this in the program, but
+    // caching here for now until we can figure out how to get reliable
+    // MakeService structs working in hyper.
+    pub fn load_time_str(&self) -> &str {
+        &self.load_tss
     }
 }
