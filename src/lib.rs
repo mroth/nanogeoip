@@ -1,3 +1,4 @@
+extern crate futures;
 extern crate httpdate;
 extern crate hyper;
 extern crate maxminddb;
@@ -12,3 +13,5 @@ pub use self::db::Record;
 pub mod http;
 pub use self::http::lookup;
 pub use self::http::Options;
+
+pub mod service;
