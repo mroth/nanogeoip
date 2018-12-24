@@ -83,7 +83,7 @@ fn main() {
         service_fn_ok(move |req| nanogeoip::lookup(req, &svc_db, &svc_opts))
     };
 
-    let addr = ([127, 0, 0, 1], port).into();
+    let addr = ([0, 0, 0, 0], port).into();
     println!("{} listening for connections on {}", crate_name!(), addr);
     let server = Server::bind(&addr)
         .http1_pipeline_flush(true)

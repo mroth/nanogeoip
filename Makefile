@@ -29,6 +29,9 @@ $(REALDATA_PATH):
 	mkdir -p $(REALDATA_DIR)
 	curl $(REALDATA_URI) | tar -xzv --strip-components=1 -C $(REALDATA_DIR)
 
+image:
+	docker build -t mrothy/nanogeoip .
+
 clobber:
 	cargo clean
 	rm -rf $(REALDATA_DIR)
