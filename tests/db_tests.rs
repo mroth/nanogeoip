@@ -1,4 +1,4 @@
-use nanogeoip::{Country, Location, Reader, Record};
+use nanogeoip::db::{Country, Location, Reader, Record};
 
 use std::net::IpAddr;
 

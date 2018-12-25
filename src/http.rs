@@ -1,3 +1,5 @@
+#![warn(missing_docs)]
+//! nanogeoip HTTP handlers and associated functionality.
 use super::db::{Reader, Record};
 
 use hyper::header::{ACCESS_CONTROL_ALLOW_ORIGIN, CONTENT_TYPE, LAST_MODIFIED};
@@ -6,7 +8,9 @@ use hyper::{Body, Request, Response, StatusCode};
 use std::net::IpAddr;
 use std::str::FromStr;
 
+/// Various options modifying how the lookup service responds to HTTP requests.
 pub struct Options {
+    /// `Access-Control-Allow-Origin` header, for controlling CORS.
     pub cors_header: Option<String>,
 }
 
@@ -22,6 +26,10 @@ fn err_json(msg: &str) -> Body {
     Body::from(format!("{{\"error\": \"{}\"}}", msg))
 }
 
+/// Transforms a HTTP request into a response.
+///
+/// Essentially a Hyper "service" but not encapsulated into the Service trait just
+/// yet, because type-checker Reasons™. :-(
 pub fn lookup(req: Request<Body>, db: &Reader, opts: &Options) -> Response<Body> {
     let mut response = Response::builder();
     response.header(CONTENT_TYPE, "application/json");
