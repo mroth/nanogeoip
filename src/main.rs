@@ -8,6 +8,7 @@ use hyper::service::service_fn_ok;
 use hyper::Server;
 use nanogeoip::{Options, Reader};
 
+use std::net::SocketAddr;
 use std::process;
 use std::sync::Arc;
 
@@ -21,6 +22,13 @@ fn main() {
                 .index(1)
                 .help("MaxMind database file")
                 .default_value("data/GeoLite2-City.mmdb")
+                .takes_value(true),
+        )
+        .arg(
+            Arg::with_name("addr")
+                .short("a")
+                .help("Address to listen for connections on")
+                .default_value("0.0.0.0")
                 .takes_value(true),
         )
         .arg(
@@ -64,10 +72,15 @@ fn main() {
         }
     };
 
-    let port = match value_t!(matches, "port", u16) {
+    let socket_str = format!(
+        "{}:{}",
+        matches.value_of("addr").unwrap(),
+        matches.value_of("port").unwrap()
+    );
+    let addr: SocketAddr = match socket_str.parse() {
         Ok(val) => val,
         Err(e) => {
-            eprintln!("{}", e);
+            eprintln!("FATAL: {} {}", socket_str, e);
             process::exit(1);
         }
     };
@@ -83,7 +96,6 @@ fn main() {
         service_fn_ok(move |req| nanogeoip::lookup(req, &svc_db, &svc_opts))
     };
 
-    let addr = ([0, 0, 0, 0], port).into();
     println!("{} listening for connections on {}", crate_name!(), addr);
     let server = Server::bind(&addr)
         .http1_pipeline_flush(true)
