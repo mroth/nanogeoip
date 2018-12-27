@@ -97,10 +97,16 @@ fn main() {
     };
 
     println!("{} listening for connections on {}", crate_name!(), addr);
-    let server = Server::bind(&addr)
-        .http1_pipeline_flush(true)
-        .serve(make_svc)
-        .map_err(|e| eprintln!("server error: {}", e));
+    let server = match Server::try_bind(&addr) {
+        Ok(val) => val,
+        Err(e) => {
+            eprintln!("FATAL: {}", e);
+            process::exit(1);
+        }
+    }
+    .http1_pipeline_flush(true)
+    .serve(make_svc)
+    .map_err(|e| eprintln!("server error: {}", e));
 
     hyper::rt::run(server);
 }
