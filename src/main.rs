@@ -54,6 +54,7 @@ fn main() {
         )
         .get_matches();
 
+    // CLI: handle trying to load database from path
     let db_path = matches.value_of("db").unwrap(); //safe bc default val
     let db = match Reader::open(db_path) {
         Ok(val) => {
@@ -72,6 +73,7 @@ fn main() {
         }
     };
 
+    // CLI: handle parsing the SocketAddr and associated syntax errors
     let socket_str = format!(
         "{}:{}",
         matches.value_of("addr").unwrap(),
@@ -85,17 +87,23 @@ fn main() {
         }
     };
 
+    // CLI: handle parsing the CORS value (no errors possible at this stage)
     let cors_raw = matches.value_of("cors").unwrap(); //safe bc default val
     let opts = Options {
         cors_header: Some(cors_raw.to_string()),
     };
 
+    // Construct our Hyper MakeService using the built-in functions
+    //
+    // I'd really prefer to have a struct encapsulating that implements
+    // MakeService but have not been able to get that working yet.
     let (db_ref, opts_ref) = (Arc::new(db), Arc::new(opts));
     let make_svc = move || {
         let (svc_db, svc_opts) = (db_ref.clone(), opts_ref.clone());
         service_fn_ok(move |req| nanogeoip::lookup(req, &svc_db, &svc_opts))
     };
 
+    // Share and enjoy!
     println!("{} listening for connections on {}", crate_name!(), addr);
     let server = match Server::try_bind(&addr) {
         Ok(val) => val,
