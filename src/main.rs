@@ -68,11 +68,13 @@ fn main() {
         }
     };
 
-    // CLI: handle parsing the CORS value (no errors possible at this stage)
+    // CLI: handle parsing the CORS value, treating an explicit "" as None
     let cors_raw = matches.value_of("cors").unwrap(); //safe bc default val
-    let opts = Options {
-        cors_header: Some(cors_raw.to_string()),
+    let cors = match cors_raw {
+        "" => None,
+        _ => Some(cors_raw.to_string()),
     };
+    let opts = Options { cors_header: cors };
 
     // Handle trying to load database from user-supplied or default path
     let db_path = matches.value_of("db").unwrap(); //safe bc default val
