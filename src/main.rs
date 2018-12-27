@@ -54,25 +54,6 @@ fn main() {
         )
         .get_matches();
 
-    // CLI: handle trying to load database from path
-    let db_path = matches.value_of("db").unwrap(); //safe bc default val
-    let db = match Reader::open(db_path) {
-        Ok(val) => {
-            println!(
-                "Loaded database {}: {} nodes, built {}",
-                db_path,
-                val.node_count(),
-                httpdate::fmt_http_date(val.build_time())
-            );
-            val
-        }
-        Err(e) => {
-            // default error "error while decoding value" not very helpful
-            eprintln!("Failed to load a GeoIP database from {}: {}", db_path, e);
-            process::exit(1);
-        }
-    };
-
     // CLI: handle parsing the SocketAddr and associated syntax errors
     let socket_str = format!(
         "{}:{}",
@@ -91,6 +72,25 @@ fn main() {
     let cors_raw = matches.value_of("cors").unwrap(); //safe bc default val
     let opts = Options {
         cors_header: Some(cors_raw.to_string()),
+    };
+
+    // Handle trying to load database from user-supplied or default path
+    let db_path = matches.value_of("db").unwrap(); //safe bc default val
+    let db = match Reader::open(db_path) {
+        Ok(val) => {
+            println!(
+                "Loaded database {}: {} nodes, built {}",
+                db_path,
+                val.node_count(),
+                httpdate::fmt_http_date(val.build_time())
+            );
+            val
+        }
+        Err(e) => {
+            // default error "error while decoding value" not very helpful
+            eprintln!("Failed to load a GeoIP database from {}: {}", db_path, e);
+            process::exit(1);
+        }
     };
 
     // Construct our Hyper MakeService using the built-in functions
