@@ -19,3 +19,7 @@ criterion = "0.2"
 [[bench]]
 name = "http_benchmarks"
 harness = false
+
+# [[bench]]
+# name = "db_benchmarks"
+# harness = false
