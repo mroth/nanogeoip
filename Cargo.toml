@@ -3,6 +3,14 @@ name = "nanogeoip"
 version = "0.1.0"
 authors = ["Matthew Rothenberg <mroth@mroth.info>"]
 edition = "2018"
+repository = "https://github.com/mroth/nanogeoip"
+keywords = ["geoip", "geolocation", "api", "microservice"]
+categories = ["command-line-utilities", "web-programming::http-server"]
+readme = "README.md"
+
+[badges]
+travis-ci = { repository = "mroth/nanogeoip", branch = "master" }
+maintenance = { status = "experimental" }
 
 [dependencies]
 maxminddb = "0.12.0"
