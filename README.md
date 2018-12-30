@@ -1,6 +1,6 @@
 # nanogeoip :dragon:
 
-[![Build Status](https://travis-ci.org/mroth/nanogeoip.svg?branch=master)](https://travis-ci.org/mroth/nanogeoip)
+[![Build Status](https://travis-ci.com/mroth/nanogeoip.svg?branch=master)](https://travis-ci.com/mroth/nanogeoip)
 
 <!--
 [![Docker Build](https://img.shields.io/docker/build/mrothy/nanogeoip.svg)](https://hub.docker.com/r/mrothy/nanogeoip)
