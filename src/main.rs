@@ -4,13 +4,11 @@ use clap::{App, Arg};
 
 use httpdate;
 use hyper::rt::Future;
-use hyper::service::service_fn_ok;
 use hyper::Server;
 use nanogeoip::{Options, Reader};
 
 use std::net::SocketAddr;
 use std::process;
-use std::sync::Arc;
 
 fn main() {
     let matches = App::new(crate_name!())
@@ -99,11 +97,15 @@ fn main() {
     //
     // I'd really prefer to have a struct encapsulating that implements
     // MakeService but have not been able to get that working yet.
-    let (db_ref, opts_ref) = (Arc::new(db), Arc::new(opts));
-    let make_svc = move || {
-        let (svc_db, svc_opts) = (db_ref.clone(), opts_ref.clone());
-        service_fn_ok(move |req| nanogeoip::lookup(req, &svc_db, &svc_opts))
-    };
+
+    // let (db_ref, opts_ref) = (Arc::new(db), Arc::new(opts));
+    // let make_svc = move || {
+    //     let (svc_db, svc_opts) = (db_ref.clone(), opts_ref.clone());
+    //     service_fn_ok(move |req| nanogeoip::lookup(req, &svc_db, &svc_opts))
+    // };
+
+    // nope
+    let make_svc = nanogeoip::service::MakeLookupService::new(db, opts);
 
     // Share and enjoy!
     println!("{} listening for connections on {}", crate_name!(), addr);
