@@ -4,14 +4,15 @@
 
 <!--
 [![Docker Build](https://img.shields.io/docker/build/mrothy/nanogeoip.svg)](https://hub.docker.com/r/mrothy/nanogeoip)
-[![GoDoc](https://docs.rs/nanogeoip/badge.svg)](https://docs.rs/nanogeoip)
+[![RustDocs](https://docs.rs/nanogeoip/badge.svg)](https://docs.rs/nanogeoip)
 -->
 
 A tiny and blazing fast HTTP based microservice for extremely minimal geoip
 location lookups.
 
 This is a work-in-progress experimental Rust port of [tinygeoip] (by the same
-author).
+author). It is additionally built on top of rapidly evolving unstable crates and
+language features, so should not be used in production just quite yet.
 
 <!-- It bundles into a ~2MB docker image that can serve over ~800K reqs/sec
 (uncached). -->
@@ -56,7 +57,9 @@ ARGS:
 
 ## Rust library
 
-For more information, see the [Rust Docs].
+For more information, see the [Rust Docs]. (Note: these are only built online
+for tagged and pushed releases on crates.io, so you'll have to build locally if
+you need them right now.)
 
 [rust docs]: https://docs.rs/nanogeoip
 
