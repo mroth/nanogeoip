@@ -1,0 +1,20 @@
+language: rust
+rust:
+  - stable
+
+cache: cargo
+
+before_script:
+  - rustup component add rustfmt
+
+script:
+  - cargo test
+  - cargo fmt --all -- --check
+
+# benchmark builds on travis are too noisy to produce relevant results :(
+# after_success:
+#   - git checkout master
+#   - cargo bench --bench http_benchmarks -- --save-baseline master
+#   - git checkout ${TRAVIS_COMMIT}
+#   - cargo bench --bench http_benchmarks -- --baseline master
+
